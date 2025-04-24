@@ -1,1 +1,6 @@
-**/.terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfvars
+.terraform.lock.hcl
+terraform/modules/instances/distribute_keys.sh
