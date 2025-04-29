@@ -63,3 +63,15 @@ module "instances" {
   pod_cidr_blocks  = local.pod_cidr_blocks
   instances_config = local.instances_config
 }
+
+// Adding this to handle an issue with routing in GCP
+resource "google_compute_route" "pod_network_routes" {
+  for_each = local.pod_cidr_blocks
+
+  name                   = "kubernetes-route-${replace(replace(each.value, ".", "-"), "/", "-")}"
+  network                = module.network.network_name
+  dest_range             = each.value
+  next_hop_instance      = module.instances.instance_map[each.key].id
+  next_hop_instance_zone = var.zone
+  priority               = 1000
+}
